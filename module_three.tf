@@ -18,6 +18,10 @@ data "template_file" "nginx" {
     }
 }
 
+#resource "google_compute_address" "static" {
+#    name = "ipv4-address"
+#}
+
 resource "google_compute_instance" "vm_instance" {
     name = var.name
     machine_type = var.machine_type
@@ -33,19 +37,19 @@ resource "google_compute_instance" "vm_instance" {
 
     network_interface {
         # A default network is created for all GCP projects
-        network = "${google_compute_network.vpc_network.self_link}"
-        #access_config = {
-        #}
+        network = "default"
+        access_config {
+            #nat_ip = google_compute_address.static.address
+        }
     }
 
     metadata_startup_script = data.template_file.nginx.rendered
 }
 
-resource "google_compute_network" "vpc_network" {
-    name = "terraform-network"
-    auto_create_subnetworks = "true"
-}
-
 output "webserver_internal_ip" {
     value = google_compute_instance.vm_instance.network_interface[0].network_ip
+}
+
+output "webserver_external_ip" {
+    value = google_compute_instance.vm_instance.network_interface.0.access_config.0.nat_ip
 }
