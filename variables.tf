@@ -24,7 +24,7 @@ variable "name" {
 variable "machine_type" {
     description = "GCP VM instance machine type."
     type        = string
-    default     = "f1-micro"
+    default     = "n1-standard-1"
 }
 
 variable "labels" {
@@ -33,3 +33,12 @@ variable "labels" {
 }
 
 variable "credential_file" {}
+
+variable "deploy_mathgarage_yaml_file" {}
+
+variable "enable_apis" {
+    description = "List of APIs that are required to be enabled."
+    type        = list
+    default     = ["deploymentmanager.googleapis.com","cloudresourcemanager.googleapis.com"]
+}
+ 
